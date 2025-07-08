@@ -1,126 +1,110 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F5F3FF">
   <title>EduPath — Регистрация</title>
-
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-
-  <style>
-    :root {
-      --brand-primary: #6C4DFF;
-      --bg-main: #F9F9FB;
-      --bg-secondary: #EDEDED;
-      --text-main: #1C1C1E;
-      --text-secondary: rgba(60, 60, 67, 0.6);
-      --border-color: #D1D1D6;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-main);
-      color: var(--text-main);
-    }
-
-    .text-secondary {
-      color: var(--text-secondary);
-    }
-
-    input:focus {
-      border-color: var(--brand-primary);
-      box-shadow: 0 0 0 2px var(--brand-primary);
-      outline: none;
-    }
-
-    input, button {
-      transition: all 0.2s ease-in-out;
-      appearance: none;
-      -webkit-appearance: none;
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 </head>
-
-<body class="flex items-center justify-center min-h-screen px-4 relative">
+<body>
   <!-- Логотип -->
-  <header class="absolute top-4 left-4 sm:top-6 sm:left-6">
-    <img src="{% static 'Icons/Logo.png' %}" alt="EduPath" class="h-9 sm:h-10 md:h-12" />
+  <header>
+    <img src="img/Logo.svg" alt="EduPath">
   </header>
 
-  <!-- Основной блок -->
-  <main class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden p-6 sm:p-8 md:p-10 border border-[var(--border-color)]">
-    <div class="mb-8 text-center">
-      <h1 class="text-2xl sm:text-3xl font-semibold mb-1 tracking-tight">Добро пожаловать!</h1>
-      <h2 class="text-base sm:text-lg font-medium mb-2 tracking-tight">Создайте аккаунт</h2>
-      <p class="text-sm text-secondary">Присоединяйтесь и начните путь к знаниям</p>
+  <!-- Форма регистрации -->
+  <main>
+    <div>
+      <h1>Добро пожаловать!</h1>
+      <p>Создайте аккаунт на EduPath</p>
     </div>
-
-    {% if error %}
-      <div class="text-red-600 text-center text-sm mb-2">{{ error }}</div>
-    {% endif %}
-
-    <!-- Форма -->
-    <form method="post" action="{% url 'register' %}" class="space-y-5 sm:space-y-6">
-      {% csrf_token %}
+    <form id="registerForm">
       <div>
-        <label for="username" class="block mb-1 text-sm font-medium">Имя пользователя</label>
-        <input id="username" name="username" type="text" placeholder="Введите имя" required class="w-full px-4 py-3 text-sm rounded-lg border border-[var(--border-color)] bg-white transition" />
+        <label for="username">Имя пользователя</label>
+        <input id="username" type="text" placeholder="Введите имя" required>
       </div>
-
       <div>
-        <label for="email" class="block mb-1 text-sm font-medium">Электронная почта</label>
-        <input id="email" name="email" type="email" placeholder="Введите email" required class="w-full px-4 py-3 text-sm rounded-lg border border-[var(--border-color)] bg-white transition" />
+        <label for="email">Электронная почта</label>
+        <input id="email" type="email" placeholder="Введите email" required>
       </div>
-
       <div>
-        <label for="password" class="block mb-1 text-sm font-medium">Пароль</label>
-        <div class="relative">
-          <input id="password" name="password1" type="password" placeholder="Введите пароль" required class="w-full px-4 py-3 text-sm rounded-lg border border-[var(--border-color)] bg-white pr-12 transition" />
-          <button type="button" onclick="togglePassword('password', 'eyeIcon')" class="absolute top-1/2 right-3 -translate-y-1/2" aria-label="Показать пароль">
-            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500 hover:text-black transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z" />
-            </svg>
+        <label for="password">Пароль</label>
+        <div class="password-container">
+          <input id="password" type="password" placeholder="Введите пароль" required>
+          <button type="button" class="password-toggle" id="togglePassword" aria-label="Показать пароль">
+            <img id="eyeIcon" src="img/Eye.svg" alt="Показать пароль" width="20" heightFav="20">
           </button>
         </div>
       </div>
-
       <div>
-        <label for="confirmPassword" class="block mb-1 text-sm font-medium">Подтвердите пароль</label>
-        <div class="relative">
-          <input id="confirmPassword" name="password2" type="password" placeholder="Повторите пароль" required class="w-full px-4 py-3 text-sm rounded-lg border border-[var(--border-color)] bg-white pr-12 transition" />
-          <button type="button" onclick="togglePassword('confirmPassword', 'eyeIconConfirm')" class="absolute top-1/2 right-3 -translate-y-1/2" aria-label="Показать пароль">
-            <svg id="eyeIconConfirm" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-500 hover:text-black transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z" />
-            </svg>
+        <label for="confirmPassword">Подтвердите пароль</label>
+        <div class="password-container">
+          <input id="confirmPassword" type="password" placeholder="Повторите пароль" required>
+          <button type="button" class="password-toggle" id="toggleConfirmPassword" aria-label="Показать пароль">
+            <img id="eyeIconConfirm" src="img/Eye.svg" alt="Показать пароль" width="20" height="20">
           </button>
         </div>
       </div>
-
-      <button type="submit" class="w-full py-3 bg-[var(--text-main)] hover:bg-black text-white text-base font-semibold rounded-lg transition">Зарегистрироваться</button>
-
-      <p class="text-center text-sm text-secondary mt-6">
-        Уже есть аккаунт?
-        <a href="{% url 'login' %}" class="text-[var(--brand-primary)] font-medium hover:underline">Войти</a>
+      <button type="submit">Зарегистрироваться</button>
+      <p class="register-link">
+        Уже есть аккаунт? <a href="#">Войти</a>
       </p>
     </form>
   </main>
 
-  <!-- Скрипты -->
+  <!-- Логика страницы регистрации -->
+  <script src="js/scripts.js"></script>
   <script>
-    function togglePassword(inputId, iconId) {
-      const input = document.getElementById(inputId);
-      const icon = document.getElementById(iconId);
-      const isHidden = input.type === 'password';
-      input.type = isHidden ? 'text' : 'password';
+    // Имитация бэкенда для тестирования
+    const mockBackend = {
+      async register(username, email, password, confirmPassword) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        if (!username || !email || !password || !confirmPassword) {
+          return { success: false, message: 'Пожалуйста, заполните все поля' };
+        }
+        if (password !== confirmPassword) {
+          return { success: false, message: 'Пароли не совпадают' };
+        }
+        return { success: true, message: `Регистрация успешна, ${username}!` };
+      }
+    };
 
-      icon.innerHTML = isHidden
-        ? `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.542-7a10.057 10.057 0 011.846-3.019m3.41-2.44A9.956 9.956 0 0112 5c4.477 0 8.268 2.943 9.542 7a10.053 10.053 0 01-4.109 5.103M15 12a3 3 0 11-6 0 3 3 0 016 0z" />\n           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3l18 18" />`
-        : `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />\n           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7c-1.274 4.057-5.065 7-9.542 7s-8.268-2.943-9.542-7z" />`;
-    }
+    // Сервис регистрации
+    const authService = {
+      async register(username, email, password, confirmPassword) {
+        try {
+          const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, email, password, confirmPassword })
+          });
+          if (!response.ok) throw new Error('Ошибка сервера');
+          return await response.json();
+        } catch (error) {
+          console.warn('Бэкенд недоступен, используется мок:', error);
+          return await mockBackend.register(username, email, password, confirmPassword);
+        }
+      }
+    };
+
+    // Инициализация переключателей пароля
+    setupPasswordToggle('togglePassword', 'password', 'eyeIcon');
+    setupPasswordToggle('toggleConfirmPassword', 'confirmPassword', 'eyeIconConfirm');
+
+    // Обработка отправки формы
+    document.getElementById('registerForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      const registerResult = await authService.register(username, email, password, confirmPassword);
+      alert(registerResult.message);
+    });
   </script>
 </body>
 </html>

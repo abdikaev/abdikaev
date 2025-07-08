@@ -1,356 +1,165 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+ {% load static %}
+ <!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+ <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EduPath - Панель репетитора</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#f5f3ff">
+  <title>EduPath - Панель преподавателя</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --brand-primary: #6C4DFF;
-      --bg-main: #F9F9FB;
-      --bg-secondary: #EDEDED;
-      --text-main: #1C1C1E;
-      --text-secondary: rgba(60, 60, 67, 0.6);
-      --border-color: #D1D1D6;
-    }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      line-height: 1.5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .btn {
-      border-radius: 12px;
-      font-weight: 500;
-      padding: 10px 20px;
-      background: var(--brand-primary);
-      color: white;
-      border: none;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn:hover { background: #5b3fe6; }
-    input:focus, textarea:focus {
-      border-color: var(--brand-primary);
-      box-shadow: 0 0 0 2px var(--brand-primary);
-      outline: none;
-    }
-    header {
-      background: white;
-      border-bottom: 1px solid var(--border-color);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-    #mobile-menu { display: none; }
-    #mobile-menu.show { display: flex; }
-    #mobile-menu-backdrop { display: none; }
-    #mobile-menu-backdrop.show { display: block; }
-    #assistant-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      width: 56px;
-      height: 56px;
-      background: var(--brand-primary);
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      z-index: 100;
-    }
-    #assistant-button:hover { background: #5b3fe6; }
-    #assistant-button img { width: 28px; height: 28px; }
-    #assistant-modal { display: none; position: fixed; bottom: 88px; right: 16px; width: min(380px, calc(100% - 32px)); max-height: 500px; background: white; border-radius: 20px; z-index: 101; box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); flex-direction: column; }
-    #assistant-modal.show { display: flex; }
-    #assistant-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-    #chat-container { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-    #chat-input-container { padding: 12px 16px; border-top: 1px solid var(--border-color); background: white; border-radius: 0 0 20px 20px; display: flex; gap: 8px; }
-    #chat-input { flex: 1; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-main); font-size: 14px; }
-    #send-button { padding: 8px 16px; background: var(--brand-primary); color: white; border-radius: 12px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
-    #send-button:hover:not(:disabled) { background: #5b3fe6; }
-    #send-button:disabled { background: var(--bg-secondary); cursor: not-allowed; }
-    .message { padding: 10px 12px; border-radius: 16px; max-width: 80%; font-size: 14px; }
-    .user-message { background: var(--brand-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .bot-message { background: var(--bg-secondary); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; }
-    .card { background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: box-shadow 0.2s, transform 0.2s; }
-    .card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
-    .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; }
-    .progress-bar { height: 6px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
-    .progress-bar-inner { height: 100%; background: var(--brand-primary); transition: width 0.3s; }
-    .hero-section h1 { font-size: clamp(2rem,4vw,3rem); font-weight: 800; line-height: 1.2; }
-    textarea { resize: none; width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-main); font-size: 14px; }
-    #messages-container { display: flex; flex-direction: row; gap: 1rem; height: 500px; }
-    #student-list { width: 250px; background: white; border-right: 1px solid var(--border-color); overflow-y: auto; }
-    .student-item { padding: 12px; border-bottom: 1px solid var(--border-color); cursor: pointer; display: flex; align-items: center; gap: 10px; }
-    .student-item:hover { background: var(--bg-secondary); }
-    .student-item.active { background: var(--brand-primary); color: white; }
-    #message-thread { flex: 1; display: flex; flex-direction: column; background: white; border-radius: 12px; }
-    #message-thread-header { padding: 12px; border-bottom: 1px solid var(--border-color); font-weight: 600; }
-    #message-thread-body { flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-    #message-thread-input { padding: 12px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; }
-  </style>
-</head>
-<body>
-  <header>
-    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-      <img src="{% static 'Icons/Logo.png' %}" alt="EduPath" class="h-8">
-      <nav class="hidden md:flex gap-6 text-sm font-medium">
-        <a href="{% url 'teacher_dashboard' %}" class="hover:text-[var(--brand-primary)]">Главная</a>
-        <a href="#my-courses" class="hover:text-[var(--brand-primary)]">Мои курсы</a>
-        <a href="#create-course" class="hover:text-[var(--brand-primary)]">Создать курс</a>
-        <a href="#messages" class="hover:text-[var(--brand-primary)]">Сообщения</a>
-        <a href="#" class="hover:text-[var(--brand-primary)]">Профиль</a>
-      </nav>
-      <div class="hidden md:flex items-center gap-3">
-        <img src="{% static 'Icons/Logo.png' %}" alt="Avatar" class="avatar" title="Профиль">
-      </div>
-      <button id="mobile-btn" class="md:hidden" aria-label="Меню" type="button" aria-expanded="false">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+  <link rel="stylesheet" href="{% static 'css/header.css' %}">
+  <link rel="stylesheet" href="{% static 'css/footer.css' %}">
+  <link rel="stylesheet" href="{% static 'css/teacher-index.css' %}">
+ </head>
+ <body>
+   <header>
+    <div class="container">
+      <a href="#dashboard"><img src="{% static 'Icons/Logo.png' %}" alt="EduPath Logo" loading="lazy"></a>
+      <nav class="desktop-nav">
+        <a href="{% url 'teacher_dashboard' %}">Главная</a>
+        <a href="#my-courses">Мои курсы</a>
+        <a href="#profile">Профиль</a>
+       </nav>
+      <div class="auth-buttons">
+        <a href="#profile"><img src="{% static 'Icons/Logo.png' %}" alt="Tutor Avatar" class="avatar" title="Перейти в профиль" loading="lazy"></a>
+       </div>
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Меню" type="button" aria-expanded="false">
+        <svg class="open-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
-      </button>
-    </div>
-    <div id="mobile-menu-backdrop"></div>
-    <nav id="mobile-menu" class="md:hidden flex-col p-6 bg-white border-t border-[var(--border-color)]">
-      <a href="{% url 'teacher_dashboard' %}" class="p-3 hover:text-[var(--brand-primary)]">Главная</a>
-      <a href="#my-courses" class="p-3 hover:text-[var(--brand-primary)]">Мои курсы</a>
-      <a href="#create-course" class="p-3 hover:text-[var(--brand-primary)]">Создать курс</a>
-      <a href="#messages" class="p-3 hover:text-[var(--brand-primary)]">Сообщения</a>
-      <a href="#" class="p-3 hover:text-[var(--brand-primary)]">Профиль</a>
-      <div class="p-3 flex flex-col gap-3">
-        <img src="{% static 'Icons/Logo.png' %}" alt="Avatar" class="avatar w-12 h-12 mx-auto" title="Профиль">
+        <svg class="close-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+         </svg>
+       </button>
+     </div>
+    <div id="mobile-menu-backdrop" class="mobile-menu-backdrop"></div>
+    <nav id="mobile-menu" class="mobile-menu"></nav>
+   </header>
+ 
+   <main>
+    <section class="hero">
+      <div class="container">
+        <h1>Ваша платформа для преподавания</h1>
+        <p>Создавайте увлекательные курсы, управляйте студентами и делитесь знаниями с миром.</p>
+        <a href="#my-courses" class="btn-primary">Начать новый курс</a>
       </div>
-    </nav>
-  </header>
-
-  <main>
-    <section class="hero-section max-w-7xl mx-auto px-4 py-12">
-      <h1 class="font-extrabold mb-4 text-center">Добро пожаловать, <span class="text-[var(--brand-primary)]">Репетитор</span>!</h1>
-      <p class="text-[var(--text-secondary)] text-base mb-6 text-center">Управляйте своими курсами и общайтесь со студентами.</p>
-    </section>
-
-    <section id="create-course" class="bg-white py-12">
-      <div class="max-w-7xl mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">Создать новый курс</h2>
-        <div class="card p-6 max-w-lg mx-auto">
-          <form id="create-course-form">
-            <div class="mb-4">
-              <label for="course-title" class="block text-sm font-medium mb-1">Название курса</label>
-              <input id="course-title" type="text" class="w-full p-2 border border-[var(--border-color)] rounded-lg" placeholder="Например, Математика: Подготовка к ЕГЭ">
-            </div>
-            <div class="mb-4">
-              <label for="course-description" class="block text-sm font-medium mb-1">Описание курса</label>
-              <textarea id="course-description" rows="4" class="w-full" placeholder="Опишите ваш курс..."></textarea>
-            </div>
-            <div class="mb-4">
-              <label for="course-image" class="block text-sm font-medium mb-1">Изображение курса</label>
-              <input id="course-image" type="file" accept="image/*" class="w-full p-2 border border-[var(--border-color)] rounded-lg">
-            </div>
-            <div class="mb-4">
-                            <label for="course-videos" class="block text-sm font-medium mb-1">Ссылки на видео (по одному на строке)</label>
-              <textarea id="course-videos" rows="3" class="w-full p-2 border border-[var(--border-color)] rounded-lg" placeholder="https://...\nhttps://..."></textarea>
-            </div>
-            <div class="mb-4">
-              <label for="course-text" class="block text-sm font-medium mb-1">Текстовые материалы</label>
-              <textarea id="course-text" rows="3" class="w-full p-2 border border-[var(--border-color)] rounded-lg"></textarea>
-            </div>
-            <div class="mb-4">
-              <label for="course-assignment" class="block text-sm font-medium mb-1">Задание</label>
-              <textarea id="course-assignment" rows="3" class="w-full p-2 border border-[var(--border-color)] rounded-lg"></textarea>
-            </div>
-            <button type="submit" class="btn w-full text-center">Создать курс</button>
-          </form>
-        </div>
-      </div>
-    </section>
-
-    <section id="my-courses" class="bg-[var(--bg-secondary)] py-12">
-      <div class="max-w-7xl mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">Ваши курсы</h2>
-        <div id="teacher-courses" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-          <article class="card">
-            <img src="{% static 'Icons/aa8625109287767.5fd08439c7676.jpg' %}" alt="Course" class="w-full h-40 object-cover rounded-t-lg">
-            <div class="p-5">
-              <h3 class="text-lg font-semibold mb-2">Математика: Подготовка к ЕГЭ</h3>
-              <p class="text-[var(--text-secondary)] text-sm mb-3">10 студентов</p>
-              <div class="flex gap-2">
-                <a href="#" class="btn w-full text-center">Редактировать</a>
-                <a href="#" class="btn w-full bg-red-500 hover:bg-red-600">Удалить</a>
+     </section>
+ 
+    <section class="dashboard">
+      <div class="container">
+        <div class="card">
+          <div class="card-content">
+            <div class="grid">
+              <div>
+                <img src="{% static 'Icons/Logo.png' %}" alt="Tutor" class="avatar" loading="lazy">
+                <h2 class="card-title">Добро пожаловать, Алексей!</h2>
+                <p class="card-text">Ваша панель для управления курсами и общения со студентами</p>
               </div>
-            </div>
+             </div>
+            <div class="grid">
+              <div class="stats-card">
+                <h3 class="card-title">12</h3>
+                <p class="card-text">Активных курсов</p>
+              </div>
+              <div class="stats-card">
+                <h3 class="card-title">45</h3>
+                <p class="card-text">Студентов</p>
+              </div>
+              <div class="stats-card">
+                <h3 class="card-title">3</h3>
+                <p class="card-text">Новых сообщения</p>
+              </div>
+             </div>
+            <div class="grid">
+              <a href="#my-courses" class="btn-primary">Перейти к курсам</a>
+             </div>
+          </div>
+         </div>
+       </div>
+     </section>
+ 
+    <section class="courses">
+      <div class="container">
+        <h2>Ваши курсы</h2>
+        <div class="grid">
+           <article class="card">
+            <img src="{% static 'Icons/aa8625109287767.5fd08439c7676.jpg' %}" alt="Математика: Подготовка к ЕГЭ" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">Математика: Подготовка к ЕГЭ</h3>
+              <p class="card-text">10 студентов</p>
+              <p class="card-text">Уровень: Средний</p>
+              <p class="card-text">Длительность: 3 месяца</p>
+              <p class="card-text">Описание: Полный курс подготовки к ЕГЭ по математике, включая алгебру, геометрию и задачи высокого уровня.</p>
+              <div class="grid">
+                <button class="btn-primary" data-action="edit" data-course="math">Редактировать</button>
+                <button class="btn-danger" data-action="delete" data-course="math">Удалить</button>
+               </div>
+             </div>
+           </article>
+          <article class="card">
+            <img src="{% static 'Icons/aa8625109287767.5fd08439c7676.jpg' %}" alt="Python: Основы программирования" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">Python: Основы программирования</h3>
+              <p class="card-text">5 студентов</p>
+              <p class="card-text">Уровень: Начальный</p>
+              <p class="card-text">Длительность: 2 месяца</p>
+              <p class="card-text">Описание: Введение в программирование на Python, включая основы синтаксиса, структуры данных и простые проекты.</p>
+             <div class="grid">
+                <button class="btn-primary" data-action="edit" data-course="python">Редактировать</button>
+                <button class="btn-danger" data-action="delete" data-course="python">Удалить</button>
+              </div>
+             </div>
           </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="messages" class="bg-white py-12">
-      <div class="max-w-7xl mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">Сообщения со студентами</h2>
-        <div id="messages-container" class="card">
-          <div id="student-list">
-            <div class="student-item" data-student-id="student1" data-student-name="Анна К.">
-              <img src="{% static 'Icons/Logo.png' %}" alt="Анна К." class="avatar">
-              <span>Анна К.</span>
-            </div>
-          </div>
-          <div id="message-thread">
-            <div id="message-thread-header">Выберите студента</div>
-            <div id="message-thread-body"></div>
-            <div id="message-thread-input">
-              <textarea id="message-input" placeholder="Напишите сообщение..." rows="2" class="flex-1" disabled></textarea>
-              <button id="send-message-btn" class="btn" disabled>Отправить</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="bg-[var(--brand-primary)] text-white py-16 text-center">
-      <div class="max-w-3xl mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-4">Создавайте новые курсы!</h2>
-        <p class="text-base mb-6 text-white/90">Поделитесь своими знаниями со студентами по всему миру.</p>
-        <a href="#create-course" class="btn bg-white text-[var(--brand-primary)] hover:bg-gray-100">Создать курс</a>
-      </div>
-    </section>
-  </main>
-
-  <footer class="mt-auto py-8 px-4 bg-white">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+         </div>
+       </div>
+     </section>
+   </main>
+ 
+  <footer>
+    <div class="container">
       <div>
-        <img src="{% static 'Icons/Logo.png' %}" alt="EduPath" class="h-8 mb-3">
-        <p class="text-[var(--text-secondary)] text-sm">Ваш проводник в мир знаний с лучшими репетиторами.</p>
+        <img src="{% static 'Icons/Logo.png' %}" alt="EduPath Logo" loading="lazy">
+        <p>Платформа для обучения и обмена знаниями с лучшими преподавателями.</p>
       </div>
-      <div>
-        <h3 class="font-semibold mb-2">Направления</h3>
-        <ul class="space-y-1 text-sm text-[var(--text-secondary)]">
-          <li><a href="#" class="hover:text-[var(--brand-primary)]">Математика</a></li>
+       <div>
+        <h3>Направления</h3>
+        <ul>
+          <li><a href="#math">Математика</a></li>
+          <li><a href="#english">Английский язык</a></li>
+          <li><a href="#programming">Программирование</a></li>
+          <li><a href="#physics">Физика</a></li>
+        </ul>
+       </div>
+       <div>
+        <h3>Партнеры</h3>
+        <ul>
+          <li><a href="#">Apple</a></li>
+          <li><a href="#">Google</a></li>
+          <li><a href="#">Meta</a></li>
+          <li><a href="#">Amazon</a></li>
         </ul>
       </div>
-    </div>
-  </footer>
-
-  <div id="assistant-button" aria-label="Чат">
-    <img src="{% static 'Icons/Send.png' %}" alt="Assistant">
-  </div>
-  <div id="assistant-modal">
-    <div id="assistant-header">
-      <span>Ассистент по курсам</span>
-      <button id="close-assistant" aria-label="Закрыть">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    <div id="chat-container">
-      <div class="message bot-message">Привет! Помогу с созданием курсов или общением со студентами.</div>
-    </div>
-    <div id="chat-input-container">
-      <input id="chat-input" type="text" placeholder="Задайте вопрос..." aria-label="Сообщение">
-      <button id="send-button" aria-label="Отправить" disabled>Отправить</button>
-    </div>
-  </div>
-
-  <script>
-    const mobileBtn = document.querySelector('#mobile-btn');
-    const mobileMenu = document.querySelector('#mobile-menu');
-    const backdrop = document.querySelector('#mobile-menu-backdrop');
-    mobileBtn.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('show');
-      backdrop.classList.toggle('show', isOpen);
-      mobileBtn.setAttribute('aria-expanded', isOpen);
-    });
-    backdrop.addEventListener('click', () => {
-      mobileMenu.classList.remove('show');
-      backdrop.classList.remove('show');
-      mobileBtn.setAttribute('aria-expanded', 'false');
-    });
-    
-    // Assistant functionality
-    const assistantBtn = document.getElementById('assistant-button');
-    const assistantModal = document.getElementById('assistant-modal');
-    const closeAssistant = document.getElementById('close-assistant');
-    const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('send-button');
-    const chatContainer = document.getElementById('chat-container');
-
-    assistantBtn.addEventListener('click', () => {
-      assistantModal.classList.add('show');
-      chatInput.focus();
-    });
-    closeAssistant.addEventListener('click', () => {
-      assistantModal.classList.remove('show');
-    });
-    chatInput.addEventListener('input', () => {
-      sendBtn.disabled = chatInput.value.trim() === '';
-    });
-    sendBtn.addEventListener('click', () => {
-      const msg = chatInput.value.trim();
-      if (!msg) return;
-      const userMsg = document.createElement('div');
-      userMsg.className = 'message user-message';
-      userMsg.textContent = msg;
-      chatContainer.appendChild(userMsg);
-      chatInput.value = '';
-      sendBtn.disabled = true;
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-      setTimeout(() => {
-        const botMsg = document.createElement('div');
-        botMsg.className = 'message bot-message';
-        botMsg.textContent = 'Спасибо за ваше сообщение!';
-        chatContainer.appendChild(botMsg);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }, 1000);
-    });
-
-    // Course creation with localStorage
-    const courseForm = document.getElementById('create-course-form');
-    const coursesContainer = document.getElementById('teacher-courses');
-
-      function addCourseCard(course) {
-        const article = document.createElement('article');
-        article.className = 'card';
-        article.dataset.courseId = course.id;
-        article.innerHTML = `
-          <img src="{% static 'Icons/aa8625109287767.5fd08439c7676.jpg' %}" alt="Course" class="w-full h-40 object-cover rounded-t-lg">
-          <div class="p-5">
-            <h3 class="text-lg font-semibold mb-2">${course.title}</h3>
-            <p class="text-[var(--text-secondary)] text-sm mb-3">0 студентов</p>
-            <div class="flex gap-2">
-              <a href="/course/${course.id}/" class="btn w-full text-center">Открыть</a>
-              <a href="#" class="btn w-full bg-red-500 hover:bg-red-600">Удалить</a>
-            </div>
-          </div>`;
-        coursesContainer.appendChild(article);
-      }
-
-    function loadCourses() {
-      const saved = JSON.parse(localStorage.getItem('createdCourses') || '[]');
-      saved.forEach(addCourseCard);
-    }
-
-    courseForm.addEventListener('submit', e => {
-      e.preventDefault();
-        const title = document.getElementById('course-title').value.trim();
-        const description = document.getElementById('course-description').value.trim();
-        const videos = document.getElementById('course-videos').value.split('\n').map(v => v.trim()).filter(v=>v);
-        const text = document.getElementById('course-text').value.trim();
-        const assignment = document.getElementById('course-assignment').value.trim();
-        if (!title) return;
-        const newCourse = { id: Date.now(), title, description, videos, text, assignment };
-        const saved = JSON.parse(localStorage.getItem('createdCourses') || '[]');
-        saved.push(newCourse);
-        localStorage.setItem('createdCourses', JSON.stringify(saved));
-        addCourseCard(newCourse);
-        courseForm.reset();
-      });
-
-    loadCourses();
-  </script>
-</body>
-</html>
+      <div>
+        <h3>Связаться с нами</h3>
+        <ul>
+          <li><a href="mailto:support@edumentor.ru">support@edumentor.ru</a></li>
+          <li><a href="tel:+74951234567">+7 (495) 123-45-67</a></li>
+          <li>Москва, ул. Лермонтова, 15</li>
+          <li><a href="#privacy">Политика конфиденциальности</a></li>
+         </ul>
+       </div>
+     </div>
+   </footer>
+ 
+  <div id="assistant-button" class="assistant-button" role="button" aria-label="Чат">
+    <img src="{% static 'Icons/Send.png' %}" alt="Assistant" loading="lazy">
+   </div>
+  <div id="assistant-modal" class="assistant-modal"></div>
+ 
+  <script src="{% static 'js/index.js' %}"></script>
+ </body>
+-</html>
++</html>

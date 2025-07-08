@@ -1,0 +1,217 @@
+/* General and Section Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body.no-scroll {
+  overflow: hidden;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.assistant-button {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background: var(--primary);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.assistant-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(108, 77, 255, 0.5);
+}
+
+.assistant-button img {
+  width: 28px;
+  height: 28px;
+}
+
+.assistant-modal {
+  display: none;
+  position: fixed;
+  bottom: 88px;
+  right: 16px;
+  width: min(380px, calc(100% - 32px));
+  max-height: 500px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  z-index: 101;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--transition), transform var(--transition);
+}
+
+.assistant-modal.show {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.assistant-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.chat-container {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-input-container {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 0 0 20px 20px;
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+.chat-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(108, 77, 255, 0.3);
+  outline: none;
+}
+
+.send-button {
+  padding: 8px 16px;
+  background: var(--primary);
+  color: white;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background var(--transition), transform var(--transition);
+}
+
+.send-button:hover:not(:disabled) {
+  background: var(--accent);
+  transform: translateY(-1px);
+}
+
+.send-button:disabled {
+  background: var(--border);
+  cursor: not-allowed;
+}
+
+.message {
+  padding: 10px 12px;
+  border-radius: 16px;
+  max-width: 80%;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.user-message {
+  background: var(--primary);
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.bot-message {
+  background: var(--secondary);
+  color: var(--text-primary);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.bot-message.typing::after {
+  content: '…';
+  display: inline-block;
+  animation: typing 1s infinite;
+}
+
+@keyframes typing {
+  0% { opacity: 0.2; }
+  50% { opacity: 1; }
+  100% { opacity: 0.2; }
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow var(--transition), transform var(--transition);
+  overflow: hidden;
+}
+
+.card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px);
+}
+
+.card-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.card-text {
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+
+@media (max-width: 640px) {
+  .container { padding: 0 12px; }
+  .assistant-button { width: 48px; height: 48px; }
+  .assistant-button img { width: 24px; height: 24px; }
+}

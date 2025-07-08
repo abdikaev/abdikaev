@@ -7,7 +7,7 @@ class LessonInline(admin.TabularInline):
 
 class CourseAdmin(admin.ModelAdmin):
     inlines = [LessonInline]
-    list_display = ('title', 'instructor', 'duration', 'is_free', 'created_at')
+    list_display = ('title', 'instructor', 'created_by', 'duration', 'is_free', 'created_at')
     list_filter = ('is_free', 'created_at')
     search_fields = ('title', 'description', 'instructor__username')
 

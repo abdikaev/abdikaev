@@ -1,325 +1,213 @@
-{% load static %}
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>EduPath - Главное Меню</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#f5f3ff">
+  <title>EduPath</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --brand-primary: #6C4DFF;
-      --bg-main: #F9F9FB;
-      --bg-secondary: #EDEDED;
-      --text-main: #1C1C1E;
-      --text-secondary: rgba(60, 60, 67, 0.6);
-      --border-color: #D1D1D6;
-    }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      line-height: 1.5;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    .btn { border-radius: 12px; font-weight: 500; padding: 10px 20px; background: var(--brand-primary); color: white; border: none; cursor: pointer; transition: background 0.2s; }
-    .btn:hover { background: #5b3fe6; }
-    header { background: white; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; }
-    #mobile-menu { display: none; flex-direction: column; padding: 1.5rem; background: white; border-top: 1px solid var(--border-color); }
-    #mobile-menu.show { display: flex; }
-    #mobile-menu-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 40; }
-    #mobile-menu-backdrop.show { display: block; }
-    #assistant-button { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; background: var(--brand-primary); border-radius: 50%; display: grid; place-items: center; z-index: 100; }
-    #assistant-button:hover { background: #5b3fe6; }
-    #assistant-button img { width: 28px; height: 28px; }
-    #assistant-modal { display: none; position: fixed; bottom: 88px; right: 16px; width: min(380px, calc(100% - 32px)); max-height: 500px; background: white; border-radius: 20px; z-index: 101; box-shadow: 0 6px 20px rgba(0,0,0,0.1); flex-direction: column; }
-    #assistant-modal.show { display: flex; }
-    #assistant-header { padding: 16px 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; font-weight: 600; }
-    #chat-container { flex: 1; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-    #chat-input-container { padding: 12px 16px; border-top: 1px solid var(--border-color); background: white; border-radius: 0 0 20px 20px; display: flex; gap: 8px; }
-    #chat-input { flex: 1; padding: 10px 12px; border: 1px solid var(--border-color); border-radius: 12px; background: var(--bg-main); font-size: 14px; }
-    #send-button { padding: 8px 16px; background: var(--brand-primary); color: white; border-radius: 12px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
-    #send-button:hover:not(:disabled) { background: #5b3fe6; }
-    #send-button:disabled { background: var(--bg-secondary); cursor: not-allowed; }
-    .message { padding: 10px 12px; border-radius: 16px; max-width: 80%; font-size: 14px; }
-    .user-message { background: var(--brand-primary); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
-    .bot-message { background: var(--bg-secondary); color: var(--text-main); align-self: flex-start; border-bottom-left-radius: 4px; }
-    .card { background: white; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: box-shadow 0.2s, transform 0.2s; }
-    .card:hover { box-shadow: 0 6px 16px rgba(0,0,0,0.08); transform: translateY(-2px); }
-    .avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; }
-    .progress-bar { height: 6px; background: var(--bg-secondary); border-radius: 3px; overflow: hidden; }
-    .progress-bar-inner { height: 100%; background: var(--brand-primary); transition: width 0.3s; }
-  </style>
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/footer.css">
+  <link rel="stylesheet" href="css/student-index.css">
 </head>
 <body>
+  <!-- Header Section -->
   <header>
-    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-      <img src="{% static 'Icons/Logo.png' %}" alt="EduPath" class="h-8">
-      <nav class="hidden md:flex gap-6 text-sm font-medium">
-        <a href="{% url 'student_dashboard' %}" class="hover:text-[var(--brand-primary)]">Главная</a>
-        <a href="{% url 'course_view' %}?course_id=1" class="hover:text-[var(--brand-primary)]">Мои курсы</a>
-        <a href="{% url 'tutors' %}" class="hover:text-[var(--brand-primary)]">Репетиторы</a>
-        <a href="#" class="hover:text-[var(--brand-primary)]">Профиль</a>
+    <div class="container">
+      <a href="index.html"><img src="img/Logo.svg" alt="EduPath Logo" loading="lazy"></a>
+      <nav class="desktop-nav">
+        <a href="index.html">Главная</a>
+        <a href="#">Курсы</a>
+        <a href="#">Репетиторы</a>
+        <a href="#">Профиль</a>
       </nav>
-      <div class="hidden md:flex items-center gap-3">
-        <img src="{% static 'Icons/Logo.png' %}" alt="User Avatar" class="avatar" title="Перейти в профиль">
+      <div class="auth-buttons">
+        <a href="#"><img src="img/Ava.png" alt="User Avatar" class="avatar" title="Перейти в профиль" loading="lazy"></a>
       </div>
-      <button id="mobile-btn" class="md:hidden" aria-label="Меню" type="button" aria-expanded="false">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Меню" type="button" aria-expanded="false">
+        <svg class="open-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg class="close-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
-    <div id="mobile-menu-backdrop"></div>
-    <nav id="mobile-menu" class="md:hidden">
-      <a href="{% url 'student_dashboard' %}" class="p-3 hover:text-[var(--brand-primary)]">Главная</a>
-      <a href="{% url 'course_view' %}?course_id=1" class="p-3 hover:text-[var(--brand-primary)]">Мои курсы</a>
-      <a href="{% url 'tutors' %}" class="p-3 hover:text-[var(--brand-primary)]">Репетиторы</a>
-      <a href="#" class="p-3 hover:text-[var(--brand-primary)]">Профиль</a>
-      <div class="p-3 flex flex-col gap-3">
-        <img src="{% static 'Icons/Logo.png' %}" alt="User Avatar" class="avatar w-12 h-12 mx-auto" title="Перейти в профиль">
-      </div>
-    </nav>
+    <div id="mobile-menu-backdrop" class="mobile-menu-backdrop"></div>
+    <nav id="mobile-menu" class="mobile-menu"></nav>
   </header>
 
+  <!-- Main Content -->
   <main>
-    <section class="hero-section max-w-7xl mx-auto px-4 py-12">
-      <h1 class="font-extrabold mb-4 text-center">Добро пожаловать, <span class="text-[var(--brand-primary)]">Пользователь</span>!</h1>
-      <p class="text-[var(--text-secondary)] text-base mb-6 text-center">Продолжайте учиться с нашими курсами и репетиторами.</p>
+    <section class="hero">
+      <div class="container">
+        <h1>Добро пожаловать, <span>Пользователь</span>!</h1>
+        <p>Продолжайте учиться с нашими курсами и репетиторами.</p>
+      </div>
     </section>
 
-    <section class="bg-white py-12">
-      <div class="max-w-7xl mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">Ваши текущие курсы</h2>
-         <div id="current-courses" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+    <section class="courses">
+      <div class="container">
+        <h2>Ваши текущие курсы</h2>
+        <div class="grid">
           <article class="card">
-            <img src="{% static 'Icons/aa8625109287767.5fd08439c7676.jpg' %}" alt="Математика" class="w-full h-40 object-cover rounded-t-lg">
-            <div class="p-5">
-              <h3 class="text-lg font-semibold mb-2">Математика: Подготовка к ЕГЭ</h3>
-              <p class="text-[var(--text-secondary)] text-sm mb-3">Репетитор: Анна С. • 60% завершено</p>
-              <div class="progress-bar mb-3"><div class="progress-bar-inner" style="width: 60%;"></div></div>
-              <a href="{% url 'video_detail' %}" class="btn w-full text-center">Продолжить</a>
+            <img src="img/Математика.png" alt="Математика" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">Математика: Подготовка к ЕГЭ</h3>
+              <p class="card-text">Репетитор: Анна С. • 60% завершено</p>
+              <div class="progress-bar"><div class="progress-bar-inner" style="width: 60%;"></div></div>
+              <a href="#" class="btn-primary">Продолжить</a>
+            </div>
+          </article>
+          <article class="card">
+            <img src="img/Английский.png" alt="Английский" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">Английский: Разговорный</h3>
+              <p class="card-text">Репетитор: Джон К. • 30% завершено</p>
+              <div class="progress-bar"><div class="progress-bar-inner" style="width: 30%;"></div></div>
+              <a href="#" class="btn-primary">Продолжить</a>
+            </div>
+          </article>
+          <article class="card">
+            <img src="img/Програмирование.png" alt="Программирование" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">Python: Основы</h3>
+              <p class="card-text">Репетитор: Иван П. • 10% завершено</p>
+              <div class="progress-bar"><div class="progress-bar-inner" style="width: 10%;"></div></div>
+              <a href="#" class="btn-primary">Продолжить</a>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="bg-[var(--bg-secondary)] py-12">
-      <div class="max-w-7xl mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">Рекомендуемые курсы</h2>
-        <div id="recommended-courses" class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+    <section class="recommended">
+      <div class="container">
+        <h2>Рекомендуемые курсы</h2>
+        <div class="grid">
           <article class="card">
-            <img src="{% static 'Icons/aa8625109287767.5fd08439c7676.jpg' %}" alt="Физика" class="w-full h-40 object-cover rounded-t-lg">
-            <div class="p-5">
-              <h3 class="text-lg font-semibold mb-2">Физика: Основы механики</h3>
-              <p class="text-[var(--text-secondary)] text-sm mb-3">Изучите законы Ньютона и кинематику.</p>
-              <a href="#" class="text-[var(--brand-primary)] hover:underline text-sm enroll">Записаться</a>
+            <img src="img/image.png" alt="Физика" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">Физика: Основы механики</h3>
+              <p class="card-text">Изучите законы Ньютона и кинематику.</p>
+              <a href="#" class="btn-secondary">Записаться</a>
+            </div>
+          </article>
+          <article class="card">
+            <img src="img/image.png" alt="Испанский" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">Испанский язык</h3>
+              <p class="card-text">Начните говорить на испанском с нуля.</p>
+              <a href="#" class="btn-secondary">Записаться</a>
+            </div>
+          </article>
+          <article class="card">
+            <img src="img/image.png" alt="Data Science" class="card-img" loading="lazy">
+            <div class="card-content">
+              <h3 class="card-title">Data Science</h3>
+              <p class="card-text">Анализ данных с Python и Pandas.</p>
+              <a href="#" class="btn-secondary">Записаться</a>
             </div>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="bg-white py-12">
-      <div class="max-w-7xl mx-auto px-4">
-        <h2 class="text-2xl md:text-3xl font-bold mb-8 text-center">Ваши достижения</h2>
-        <div class="grid gap-6 md:grid-cols-3">
-          <div class="card p-5 text-center">
-            <h3 class="text-lg font-semibold mb-2">3 курса</h3>
-            <p class="text-[var(--text-secondary)] text-sm">Вы уже начали обучение!</p>
+    <section class="achievements">
+      <div class="container">
+        <h2>Ваши достижения</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-content">
+              <h3 class="card-title">3 курса</h3>
+              <p class="card-text">Вы уже начали обучение!</p>
+            </div>
           </div>
-          <div class="card p-5 text-center">
-            <h3 class="text-lg font-semibold mb-2">15 уроков</h3>
-            <p class="text-[var(--text-secondary)] text-sm">Завершено уроков.</p>
+          <div class="card">
+            <div class="card-content">
+              <h3 class="card-title">15 уроков</h3>
+              <p class="card-text">Завершено уроков.</p>
+            </div>
           </div>
-          <div class="card p-5 text-center">
-            <h3 class="text-lg font-semibold mb-2">2 сертификата</h3>
-            <p class="text-[var(--text-secondary)] text-sm">Получено сертификатов.</p>
+          <div class="card">
+            <div class="card-content">
+              <h3 class="card-title">2 сертификата</h3>
+              <p class="card-text">Получено сертификатов.</p>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="bg-[var(--brand-primary)] text-white py-16 text-center">
-      <div class="max-w-3xl mx-auto px-4">
-        <h2 class="text-3xl font-bold mb-4">Хотите больше знаний?</h2>
-        <p class="text-base mb-6 text-white/90">Запишитесь на новый курс прямо сейчас!</p>
-        <a href="#" class="btn bg-white text-[var(--brand-primary)] hover:bg-gray-100">Найти новый курс</a>
+    <section class="cta">
+      <div class="container">
+        <h2>Хотите больше знаний?</h2>
+        <p>Запишитесь на новый курс прямо сейчас!</p>
+        <a href="#" class="btn-primary">Найти новый курс</a>
       </div>
     </section>
   </main>
 
-  <footer class="mt-auto py-8 px-4 bg-white">
-    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+  <!-- Footer Section -->
+  <footer>
+    <div class="container">
       <div>
-        <img src="{% static 'Icons/Logo.png' %}" alt="EduPath" class="h-8 mb-3">
-        <p class="text-[var(--text-secondary)] text-sm">Ваш проводник в мир знаний с лучшими репетиторами.</p>
+        <img src="img/Logo.svg" alt="EduPath Logo" loading="lazy">
+        <p>Ваш проводник в мир знаний с лучшими репетиторами.</p>
       </div>
       <div>
-        <h3 class="font-semibold mb-2">Направления</h3>
-        <ul class="space-y-1 text-sm text-[var(--text-secondary)]">
-          <li><a href="#" class="hover:text-[var(--brand-primary)]">Математика</a></li>
+        <h3>Направления</h3>
+        <ul>
+          <li><a href="#">Математика</a></li>
+          <li><a href="#">Английский язык</a></li>
+          <li><a href="#">Программирование</a></li>
+          <li><a href="#">Физика</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Партнеры</h3>
+        <ul>
+          <li><a href="#">Apple</a></li>
+          <li><a href="#">Google</a></li>
+          <li><a href="#">Meta</a></li>
+          <li><a href="#">Amazon</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Связаться с нами</h3>
+        <ul>
+          <li>support@edumentor.ru</li>
+          <li>+7 (495) 123-45-67</li>
+          <li>Москва, ул. Лермонтова, 15</li>
+          <li><a href="#">Политика конфиденциальности</a></li>
         </ul>
       </div>
     </div>
   </footer>
 
-  <div id="assistant-button" aria-label="Чат">
-    <img src="{% static 'Icons/Send.png' %}" alt="Assistant">
+  <!-- Chat Assistant -->
+  <div id="assistant-button" class="assistant-button" role="button" aria-label="Чат">
+    <img src="img/Message circle.svg" alt="Assistant" loading="lazy">
   </div>
-  <div id="assistant-modal">
-    <div id="assistant-header">
+  <div id="assistant-modal" class="assistant-modal">
+    <div class="assistant-header">
       <span>Ассистент по курсам</span>
-      <button id="close-assistant" aria-label="Закрыть">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      <button id="assistant-close-btn" aria-label="Закрыть">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
         </svg>
       </button>
     </div>
-    <div id="chat-container">
-      <div class="message bot-message">Привет! Помогу найти новый курс или ответить на вопросы.</div>
+    <div id="chat-container" class="chat-container">
+      <div class="message bot-message">Привет! Помогу найти новый курс или ответить на вопросы по текущим. Что вас интересует?</div>
     </div>
-    <div id="chat-input-container">
-      <input id="chat-input" type="text" placeholder="Задайте вопрос..." aria-label="Сообщение">
-      <button id="send-button" aria-label="Отправить" disabled>Отправить</button>
+    <div class="chat-input-container">
+      <input id="chat-input" class="chat-input" type="text" placeholder="Задайте вопрос..." aria-label="Сообщение">
+      <button id="send-button" class="send-button" aria-label="Отправить" disabled>Отправить</button>
     </div>
   </div>
 
-  <script>
-    const mobileBtn = document.querySelector('#mobile-btn');
-    const mobileMenu = document.querySelector('#mobile-menu');
-    const backdrop = document.querySelector('#mobile-menu-backdrop');
-    mobileBtn.addEventListener('click', () => {
-      const isOpen = mobileMenu.classList.toggle('show');
-      backdrop.classList.toggle('show', isOpen);
-      mobileBtn.setAttribute('aria-expanded', isOpen);
-    });
-    backdrop.addEventListener('click', () => {
-      mobileMenu.classList.remove('show');
-      backdrop.classList.remove('show');
-      mobileBtn.setAttribute('aria-expanded', 'false');
-    });
-
-    
-    // Assistant functionality
-    const assistantBtn = document.getElementById('assistant-button');
-    const assistantModal = document.getElementById('assistant-modal');
-    const closeAssistant = document.getElementById('close-assistant');
-    const chatInput = document.getElementById('chat-input');
-    const sendBtn = document.getElementById('send-button');
-    const chatContainer = document.getElementById('chat-container');
-
-    assistantBtn.addEventListener('click', () => {
-      assistantModal.classList.add('show');
-      chatInput.focus();
-    });
-    closeAssistant.addEventListener('click', () => {
-      assistantModal.classList.remove('show');
-    });
-    chatInput.addEventListener('input', () => {
-      sendBtn.disabled = chatInput.value.trim() === '';
-    });
-    sendBtn.addEventListener('click', () => {
-      const msg = chatInput.value.trim();
-      if (!msg) return;
-      const userMsg = document.createElement('div');
-      userMsg.className = 'message user-message';
-      userMsg.textContent = msg;
-      chatContainer.appendChild(userMsg);
-      chatInput.value = '';
-      sendBtn.disabled = true;
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-      setTimeout(() => {
-        const botMsg = document.createElement('div');
-        botMsg.className = 'message bot-message';
-        botMsg.textContent = 'Спасибо за ваш вопрос! Мы скоро ответим.';
-        chatContainer.appendChild(botMsg);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
-      }, 1000);
-    });
-
-    // Enrollment from recommended to current
-      function attachEnrollHandlers() {
-        document.querySelectorAll('#recommended-courses .enroll').forEach(link => {
-          link.addEventListener('click', e => {
-            e.preventDefault();
-            const card = link.closest('article');
-            link.remove();
-            const progress = document.createElement('div');
-            progress.className = 'progress-bar mb-3';
-            progress.innerHTML = '<div class="progress-bar-inner" style="width: 0%;"></div>';
-            card.querySelector('.p-5').appendChild(progress);
-            const id = card.dataset.courseId;
-            const cont = document.createElement('a');
-            cont.href = '/course/' + id + '/';
-            cont.className = 'btn w-full text-center';
-            cont.textContent = 'Продолжить';
-            card.querySelector('.p-5').appendChild(cont);
-            document.getElementById('current-courses').appendChild(card);
-            const enrolled = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
-            if(!enrolled.includes(id)) enrolled.push(id);
-            localStorage.setItem('enrolledCourses', JSON.stringify(enrolled));
-            localStorage.setItem('courseProgress:'+id, 0);
-          });
-        });
-      }
-    attachEnrollHandlers();
-
-    // Load courses created by teachers
-      function loadTeacherCourses() {
-        const saved = JSON.parse(localStorage.getItem('createdCourses') || '[]');
-        const enrolled = JSON.parse(localStorage.getItem('enrolledCourses') || '[]');
-        const rec = document.getElementById('recommended-courses');
-        const cur = document.getElementById('current-courses');
-        saved.forEach(c => {
-          const article = document.createElement('article');
-          article.className = 'card';
-          article.dataset.courseId = c.id;
-          article.innerHTML = `
-            <img src="{% static 'Icons/aa8625109287767.5fd08439c7676.jpg' %}" alt="${c.title}" class="w-full h-40 object-cover rounded-t-lg">
-            <div class="p-5">
-              <h3 class="text-lg font-semibold mb-2">${c.title}</h3>
-              <p class="text-[var(--text-secondary)] text-sm mb-3">${c.description}</p>
-            </div>`;
-          if(enrolled.includes(String(c.id))){
-            const progress = document.createElement('div');
-            progress.className='progress-bar mb-3';
-            progress.innerHTML='<div class="progress-bar-inner" style="width:0%"></div>';
-            article.querySelector('.p-5').appendChild(progress);
-            const cont=document.createElement('a');
-            cont.href='/course/'+c.id+'/';
-            cont.className='btn w-full text-center';
-            cont.textContent='Продолжить';
-            article.querySelector('.p-5').appendChild(cont);
-            cur.appendChild(article);
-          }else{
-            const enroll = document.createElement('a');
-            enroll.href='#';
-            enroll.className='text-[var(--brand-primary)] hover:underline text-sm enroll';
-            enroll.textContent='Записаться';
-            article.querySelector('.p-5').appendChild(enroll);
-            rec.appendChild(article);
-          }
-        });
-        attachEnrollHandlers();
-      }
-
-      function updateProgressBars() {
-        document.querySelectorAll('[data-course-id]').forEach(card => {
-          const id = card.dataset.courseId;
-          const p = localStorage.getItem('courseProgress:'+id) || 0;
-          const bar = card.querySelector('.progress-bar-inner');
-          if(bar) bar.style.width = p + '%';
-        });
-      }
-
-      loadTeacherCourses();
-      updateProgressBars();
-    
-  </script>
+  <script src="js/index.js"></script>
 </body>
 </html>

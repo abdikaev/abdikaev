@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F5F3FF">
+  <title>EduPath — Подтверждение email</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Логотип -->
+  <header>
+    <img src="img/Logo.svg" alt="EduPath">
+  </header>
+
+  <!-- Форма подтверждения email -->
+  <main>
+    <div>
+      <h1>Подтверждение email</h1>
+      <p>Введите код, отправленный на ваш email</p>
+    </div>
+    <form id="verifyEmailForm">
+      <div>
+        <label for="code">Код подтверждения</label>
+        <input id="code" type="text" placeholder="Введите код" required>
+      </div>
+      <button type="submit">Подтвердить</button>
+      <p class="register-link">
+        Уже подтвердили? <a href="#">Войти</a>
+      </p>
+    </form>
+  </main>
+
+  <!-- Логика страницы подтверждения email -->
+  <script>
+    // Имитация бэкенда для тестирования
+    const mockBackend = {
+      async verifyEmail(code) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        if (!code) {
+          return { success: false, message: 'Пожалуйста, введите код' };
+        }
+        if (code === '123456') { // Пример кода для тестирования
+          return { success: true, message: 'Email успешно подтверждён!' };
+        }
+        return { success: false, message: 'Неверный код подтверждения' };
+      }
+    };
+
+    // Сервис подтверждения email
+    const authService = {
+      async verifyEmail(code) {
+        try {
+          const response = await fetch('/api/verify-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code })
+          });
+          if (!response.ok) throw new Error('Ошибка сервера');
+          return await response.json();
+        } catch (error) {
+          console.warn('Бэкенд недоступен, используется мок:', error);
+          return await mockBackend.verifyEmail(code);
+        }
+      }
+    };
+
+    // Обработка отправки формы
+    document.getElementById('verifyEmailForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const code = document.getElementById('code').value.trim();
+
+      const verifyEmailResult = await authService.verifyEmail(code);
+      alert(verifyEmailResult.message);
+    });
+  </script>
+</body>
+</html>

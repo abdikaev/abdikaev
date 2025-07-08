@@ -1,0 +1,45 @@
+/* Footer Styles */
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  margin-top: auto;
+  padding: 2rem 0;
+  z-index: 10;
+}
+
+footer .container {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+}
+
+footer img {
+  height: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+footer h3 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+footer ul {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-subtle);
+  font-size: 0.875rem;
+}
+
+footer p,
+footer a {
+  color: var(--text-subtle);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+footer a:hover {
+  color: var(--primary);
+}

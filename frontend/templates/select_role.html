@@ -1,83 +1,161 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="theme-color" content="#F9F9FB" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#F5F3FF">
   <title>EduPath — Выбор роли</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-
+  <!-- Стили для страницы выбора роли -->
   <style>
-    :root {
-      --brand-primary: #6C4DFF;
-      --bg-main: #F9F9FB;
-      --bg-secondary: #EDEDED;
-      --text-main: #1C1C1E;
-      --text-secondary: rgba(60, 60, 67, 0.6);
-      --border-color: #D1D1D6;
+    /* Контейнер выбора роли */
+    .role-selection {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
 
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg-main);
-      color: var(--text-main);
+    /* Карточка роли */
+    .role-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .text-secondary {
-      color: var(--text-secondary);
+    .role-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
 
-    button {
-      transition: all 0.2s ease-in-out;
+    .role-card h3 {
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .role-card img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .role-card p {
+      font-size: 14px;
+      color: var(--text-subtle);
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    /* Кнопка выбора роли */
+    .role-card button {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    .role-card button:hover {
+      background: var(--accent);
+    }
+
+    /* Адаптивные стили */
+    @media (max-width: 640px) {
+      .role-card {
+        padding: 16px;
+      }
+
+      .role-card h3, .role-card p, .role-card button {
+        font-size: 13px;
+      }
+
+      .role-card button {
+        padding: 10px;
+      }
     }
   </style>
 </head>
-
-<body class="flex items-center justify-center min-h-screen px-4 sm:px-6 lg:px-8 relative">
+<body>
   <!-- Логотип -->
-  <header class="absolute top-4 left-4 sm:top-6 sm:left-6">
-    <img src="{% static 'Icons/Logo.png' %}" alt="EduPath" class="h-9 sm:h-10 md:h-12" />
+  <header>
+    <img src="img/Logo.svg" alt="EduPath">
   </header>
 
-  <!-- Основной блок -->
-  <main class="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden p-6 sm:p-8 md:p-10 border border-[var(--border-color)]">
-    <div class="mb-8 text-center">
-      <h1 class="text-2xl sm:text-3xl font-semibold mb-1 tracking-tight">Выберите свою роль</h1>
-      <h2 class="text-base sm:text-lg font-medium mb-2 tracking-tight">Вы преподаватель или ученик?</h2>
-      <p class="text-xs sm:text-sm text-secondary">Укажите роль, чтобы продолжить</p>
+  <!-- Выбор роли -->
+  <main>
+    <div>
+      <h1>Выберите свою роль</h1>
+      <p>Укажите роль, чтобы продолжить</p>
     </div>
-
-    <div class="space-y-5 sm:space-y-6">
-      <!-- Роль: Преподаватель -->
-      <div class="border border-[var(--border-color)] rounded-2xl p-5 sm:p-6 transition hover:shadow-md hover:border-[var(--brand-primary)] bg-white">
-        <h3 class="text-base sm:text-lg font-semibold mb-2">👨‍🏫 Преподаватель</h3>
-        <p class="text-sm text-secondary mb-4">Управляйте занятиями, создавайте задания и помогайте ученикам.</p>
-        <form method="post" class="mt-2">
-          {% csrf_token %}
-          <input type="hidden" name="role" value="teacher">
-          <button type="submit" class="w-full py-3 bg-[var(--text-main)] hover:bg-black text-white text-base font-semibold rounded-lg transition">Выбрать преподавателя</button>
-        </form>
+    <div class="role-selection">
+      <div class="role-card">
+        <h3>
+          <img src="img/Document.svg" alt="Преподаватель" width="20" height="20">
+          Преподаватель
+        </h3>
+        <p>Управляйте занятиями, создавайте задания и помогайте ученикам.</p>
+        <button data-role="teacher">Выбрать преподавателя</button>
       </div>
-
-      <!-- Роль: Ученик -->
-      <div class="border border-[var(--border-color)] rounded-2xl p-5 sm:p-6 transition hover:shadow-md hover:border-[var(--brand-primary)] bg-white">
-        <h3 class="text-base sm:text-lg font-semibold mb-2">🎓 Ученик</h3>
-        <p class="text-sm text-secondary mb-4">Присоединяйтесь к занятиям, выполняйте задания и следите за прогрессом.</p>
-        <form method="post" class="mt-2">
-          {% csrf_token %}
-          <input type="hidden" name="role" value="student">
-          <button type="submit" class="w-full py-3 bg-[var(--text-main)] hover:bg-black text-white text-base font-semibold rounded-lg transition">Выбрать ученика</button>
-        </form>
+      <div class="role-card">
+        <h3>
+          <img src="img/Time Circle.svg" alt="Ученик" width="20" height="20">
+          Ученик
+        </h3>
+        <p>Присоединяйтесь к занятиям, выполняйте задания и следите за прогрессом.</p>
+        <button data-role="student">Выбрать ученика</button>
       </div>
     </div>
   </main>
 
+  <!-- Логика страницы выбора роли -->
   <script>
+    // Имитация бэкенда для тестирования
+    const mockBackend = {
+      async selectRole(role) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        return { success: true, message: `Вы выбрали роль: ${role === 'teacher' ? 'Преподаватель' : 'Ученик'}` };
+      }
+    };
 
+    // Сервис выбора роли
+    const roleService = {
+      async selectRole(role) {
+        try {
+          const response = await fetch('/api/select-role', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ role })
+          });
+          if (!response.ok) throw new Error('Ошибка сервера');
+          return await response.json();
+        } catch (error) {
+          console.warn('Бэкенд недоступен, используется мок:', error);
+          return await mockBackend.selectRole(role);
+        }
+      }
+    };
+
+    // Обработка выбора роли
+    document.querySelectorAll('.role-card button').forEach(button => {
+      button.addEventListener('click', async () => {
+        const role = button.dataset.role;
+        const selectRoleResult = await roleService.selectRole(role);
+        alert(selectRoleResult.message);
+        // window.location.href = `register-${role}.html`; // Uncomment if needed
+      });
+    });
   </script>
 </body>
 </html>
